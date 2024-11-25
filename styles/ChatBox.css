@@ -1,0 +1,164 @@
+/* src/styles/ChatBox.css */
+.chatbox {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: rgba(188, 5, 5, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+  }
+  
+  .chat-history {
+    max-height: 500px;
+    padding: 20px;
+    border-radius: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 10px 0;
+  }
+  
+  .user-message, .ai-message {
+    padding: 12px 18px;
+    margin: 8px 0;
+    border-radius: 15px;
+    max-width: 80%;
+    line-height: 1.5;
+    position: relative;
+    width: fit-content;
+  }
+  
+  .user-message {
+    background: #2962ff;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+    animation: slideInRight 0.3s ease forwards;
+  }
+  
+  .ai-message {
+    background: rgba(255, 255, 255, 0.1);
+    border-bottom-left-radius: 5px;
+    margin-right: auto;
+    animation: typeWriter 1s steps(40, end);
+    position: relative;
+  }
+  
+  .chat-input {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .chat-input input:focus {
+    outline: none;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+  }
+  
+  .chat-input button {
+    padding: 15px 30px;
+    border: none;
+    border-radius: 12px;
+    background: #2962ff;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .chat-input button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(41, 98, 255, 0.3);
+  }
+  
+  .loading-message {
+    text-align: center;
+    color: #888;
+    padding: 10px;
+    animation: pulse 1.5s infinite;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
+  }
+  
+  /* Custom scrollbar */
+  .chat-history::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .chat-history::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+  }
+  
+  .chat-history::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+  }
+  
+  .figure-select {
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: inherit;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .figure-select:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  @keyframes typeWriter {
+    from {
+      clip-path: inset(0 100% 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+  
+  @keyframes slideInRight {
+    0% {
+      opacity: 0;
+      transform: translateX(100px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
