@@ -146,7 +146,7 @@ User interfaces showcasing:
 - Chat with Lord Krishna trained on Mahabharat
 - Chat with Albert Einstein
 
-## Future Enhancements
+## What's Next ?
 
 * Make multiple figures talk with each other
 * Enhance with sentiment analysis to adjust AI responses dynamically
@@ -159,14 +159,3 @@ To learn more about Google Cloud services and create impact:
 * Join the Datapreneur Social meetup group
 * Sign up to become a Google Cloud Innovator
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-[Add your license here]
-
-## Contact
-
-[Add your contact information]
