@@ -56,7 +56,7 @@ const HeroSection = () => {
           transition={{ delay: 3, duration: 2.5 , repeat: Infinity, repeatType: "reverse" }}
         >
          <motion.a
-  href="#"
+  href="/chat"
   whileHover={{ 
     scale: 1.05,
     color: "#fff",
