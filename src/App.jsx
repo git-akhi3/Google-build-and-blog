@@ -26,9 +26,8 @@ const App = () => {
       <div className="relative z-10 min-h-screen flex items-center justify-center">
         <div className="w-full max-w-3xl h-[600px] bg-[#D1C2AC] shadow-lg rounded-lg overflow-hidden p-6 flex flex-col">
           <h1 
-            className="text-5xl  text-center mb-6 text-[#683B2B] flex-shrink-0"
+            className="text-5xl font-tilt text-center mb-6 text-[#683B2B] flex-shrink-0"
             style={{ 
-              fontFamily: "'Tilt Prism', cursive",
               textShadow: '2px 2px 4px rgba(0,0,0,0.1)'
             }}
           >
