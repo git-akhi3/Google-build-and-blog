@@ -1,6 +1,6 @@
 
 import { BotMessageSquare, Languages, Mic, Users, Globe, Sparkles } from "lucide-react";
-
+import { MessageCircle, Brain, Lightbulb, Share2 } from "lucide-react";
 import user1 from "../../assets/profile-pictures/user1.jpg";
 import user2 from "../../assets/profile-pictures/user2.jpg";
 import user3 from "../../assets/profile-pictures/user3.jpg";
@@ -95,24 +95,28 @@ export const features = [
 
 export const checklistItems = [
   {
-    title: "Code merge made easy",
+    icon: <MessageCircle size={24} />,
+    title: "Authentic Historical Conversations",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Engage directly with Einstein and other historical figures through AI-powered conversations that feel real and meaningful.",
   },
   {
-    title: "Review code without worry",
+    icon: <Brain size={24} />,
+    title: "Learn Complex Concepts Easily",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Understand relativity, quantum physics, and Einstein's revolutionary ideas through personal explanations from the genius himself.",
   },
   {
-    title: "AI Assistance to reduce time",
+    icon: <Lightbulb size={24} />,
+    title: "Gain New Historical Perspectives",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Discover Einstein's thoughts on modern science, his personal life, and the historical context that shaped his discoveries.",
   },
   {
-    title: "Share work in minutes",
+    icon: <Share2 size={24} />,
+    title: "Share Conversations and Insights",
     description:
-      "Track the performance of your VR apps and gain insights into user behavior.",
+      "Export and share your conversations with Einstein and other historical figures for educational purposes or personal reflection.",
   },
 ];
 
