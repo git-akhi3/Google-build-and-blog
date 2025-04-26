@@ -3,6 +3,7 @@ import ChatBox from './components/ChatBox';
 import TestComponent from './components/test';
 import './index.css';
 import { Bot } from 'lucide-react';
+import Background from './assets/bg.jpg';
 
 // Add import for Henny Penny font
 
@@ -12,9 +13,9 @@ const App = () => {
     <div className="relative min-h-screen">
       {/* Background div */}
       <div 
-        className="absolute inset-0"
+        className="absolute inset-0 h-full w-full"
         style={{
-          backgroundImage: "url('/src/assets/Untitled design (1).jpg')",
+          backgroundImage: `url(${Background})`,
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           zIndex: 0
