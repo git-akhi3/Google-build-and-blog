@@ -13,14 +13,13 @@ const ChatBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const synth = useRef(window.speechSynthesis);
   
   const currentFigure = historicalFigures.find(figure => figure.figure === selectedFigure);
 
   // Stop any ongoing speech when changing historical figures
   useEffect(() => {
-    if (synth.current) {
-      synth.current.cancel();
+    if (window.responsiveVoice) {
+      window.responsiveVoice.cancel();
       setIsSpeaking(false);
     }
   }, [selectedFigure]);
@@ -28,57 +27,33 @@ const ChatBox = () => {
   const speakText = (text) => {
     if (!voiceEnabled) return;
     
-    // Clean up the text - remove emojis and markdown formatting
+    // Clean the text
     const cleanText = text
-      .replace(/!\[(.*?)\]\((.*?)\)/g, '') // Remove markdown images
-      .replace(/\*\*(.*?)\*\*/g, '$1')     // Remove bold formatting
-      .replace(/\*(.*?)\*/g, '$1')         // Remove italic formatting
-      .replace(/```(.*?)```/gs, '')        // Remove code blocks
-      .replace(/`(.*?)`/g, '')             // Remove inline code
-      .replace(/^[\W]+/g, '')              // Remove emojis at start
-      .replace(/#/g, '');                  // Remove hashtags
-      
-    // Create speech utterance
-    const utterance = new SpeechSynthesisUtterance(cleanText);
+      .replace(/!\[(.*?)\]\((.*?)\)/g, '') 
+      .replace(/\*\*(.*?)\*\*/g, '$1')    
+      .replace(/\*(.*?)\*/g, '$1')         
+      .replace(/```(.*?)```/gs, '')        
+      .replace(/`(.*?)`/g, '')             
+      .replace(/^[\W]+/g, '')              
+      .replace(/#/g, '');                  
+  
+    // Get the character's voice from their data
+    const voice = currentFigure?.voice || "US English Male";
     
-    // Select a voice based on the historical figure (optional)
-    const voices = synth.current.getVoices();
-    
-    // Choose an appropriate voice if available
-    // This is very basic voice selection - you might want to customize this
-    if (voices.length > 0) {
-      // Try to find a voice that matches the gender or nationality of the figure
-      // This is just an example - you would need to expand this logic
-      if (currentFigure.gender === "female") {
-        const femaleVoice = voices.find(voice => voice.name.includes("female") || voice.name.includes("Female"));
-        if (femaleVoice) utterance.voice = femaleVoice;
-      } else {
-        const maleVoice = voices.find(voice => voice.name.includes("male") || voice.name.includes("Male"));
-        if (maleVoice) utterance.voice = maleVoice;
-      }
+    // Speak using ResponsiveVoice
+    if (window.responsiveVoice) {
+      setIsSpeaking(true);
+      window.responsiveVoice.speak(cleanText, voice, {
+        onend: () => setIsSpeaking(false)
+      });
+    } else {
+      console.error("ResponsiveVoice not loaded yet!");
     }
-    
-    // Set speaking rate slightly slower for old historical figures
-    if (currentFigure.era.includes("century") || 
-        parseInt(currentFigure.era.match(/\d+/)?.[0] || "2000") < 1900) {
-      utterance.rate = 0.9;
-    }
-    
-    // Events to track speaking state
-    utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
-    utterance.onerror = () => setIsSpeaking(false);
-    
-    // Cancel any ongoing speech
-    synth.current.cancel();
-    
-    // Start speaking
-    synth.current.speak(utterance);
   };
-
+  
   const stopSpeaking = () => {
-    if (synth.current) {
-      synth.current.cancel();
+    if (window.responsiveVoice) {
+      window.responsiveVoice.cancel();
       setIsSpeaking(false);
     }
   };
@@ -97,16 +72,24 @@ const ChatBox = () => {
     setInputMessage('');
     
     try {
-      const aiResponse = await chatWithHistoricalFigure(messageToSend, selectedFigure);
+      const response = await chatWithHistoricalFigure(messageToSend, selectedFigure);
+      
+      // Handle both old API format (string) and new format (object with text and voice)
+      const aiResponseText = typeof response === 'string' ? response : response.text;
+      
       setChatHistory(prev => [
         ...prev,
-        { message: aiResponse, userType: 'ai' }
+        { message: aiResponseText, userType: 'ai' }
       ]);
       
       // Speak the response
-      speakText(aiResponse);
+      speakText(aiResponseText);
     } catch (error) {
       console.error("Error sending message:", error);
+      setChatHistory(prev => [
+        ...prev,
+        { message: "Sorry, I'm having trouble responding right now.", userType: 'ai' }
+      ]);
     } finally {
       setIsLoading(false);
     }
