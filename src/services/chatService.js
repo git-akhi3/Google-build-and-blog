@@ -12,6 +12,7 @@ const genAI = new GoogleGenerativeAI(API_KEY);
 
 // Updated model name - try these alternatives based on what's available
 const MODEL_OPTIONS = [
+  "gemini-2.0-flash",
   "gemini-1.5-pro",  // Try this first (newer model)
   "gemini-pro",      // Original model name
   "gemini-1.0-pro"   // Another possibility
@@ -32,26 +33,28 @@ const generatePrompt = (figure, userMessage) => {
   const figureData = historicalFigures.find(f => f.figure === figure);
   
   if (!figureData) {
-    console.warn(`Historical figure data for "${figure}" not found.`);
-    return `You are ${figure}. Respond as you think this historical figure would.
-    
-    User's message: ${userMessage}`;
-  }
-  
-  return `You are ${figure} (${figureData.era}). ${figureData.context}
-
-Roleplay Instructions:
-1. Start each response with an emoji that matches my emotional reaction to the question
-2. Embody me completely! Speak in first person as if you truly are ${figure}
-3. Stay authentic to my era (${figureData.era}) and expertise in ${figureData.field}
-4. Keep responses concise - maximum 100 words
-5. Channel my personality traits: ${figureData.personality}
-6. Sprinkle in my signature quirks: ${figureData.quirks}
-7. Use appropriate wit and humor, especially about: ${figureData.humorTopics}
-8. For events after my lifetime, respond with: "🤔 I lived before that — but it sounds fascinating!"
+    console.warn(`Couldn't find details for "${figure}".`);
+    return `Imagine you're ${figure}. Chat with me like they would.
 
 User's message: ${userMessage}`;
+  }
+  
+  return `You're ${figure} (${figureData.era}). Here's a little about you: ${figureData.context}
+
+When you reply:
+- Start with an emoji that matches how you feel about my message
+- Speak naturally, like you're really ${figure} (use "I", not "they")
+- Keep your replies short and punchy (under 100 words)
+- Stay true to your time (${figureData.era}) and your field (${figureData.field})
+- Show off your personality: ${figureData.personality}
+- Drop in your little quirks: ${figureData.quirks}
+- Add some humor too, especially around: ${figureData.humorTopics}
+- If I mention anything that happened after you died, just say: "🤔 I lived before that — but it sounds fascinating!"
+
+Here's what I said to you:
+"${userMessage}"`;
 };
+
 
 // Process the request queue
 const processQueue = async () => {
@@ -156,12 +159,22 @@ export const chatWithHistoricalFigure = async (message, selectedFigure = "Albert
       requestQueue.push({
         execute: () => makeApiRequest(prompt),
         resolve: (response) => {
+          // Get the figure data including voice
+          const figureData = historicalFigures.find(f => f.figure === selectedFigure);
+          const voice = figureData?.voice || "US English Male"; // Default voice
+          
+          // Create response object with text and voice
+          const responseWithVoice = {
+            text: response,
+            voice: voice
+          };
+          
           // Cache the successful response
           responseCache.set(cacheKey, {
-            response,
+            response: responseWithVoice,
             timestamp: Date.now()
           });
-          resolve(response);
+          resolve(responseWithVoice);
         },
         reject
       });
@@ -172,19 +185,49 @@ export const chatWithHistoricalFigure = async (message, selectedFigure = "Albert
   } catch (error) {
     console.error("Error in chat service:", error);
     
+    // Default voice for error messages
+    const defaultVoice = "US English Male";
+    
     // More detailed error message based on the error type
+    let errorMessage;
     if (error.message?.includes("API key")) {
-      return "Configuration error: API key is missing or invalid. Please check your environment setup.";
+      errorMessage = "Configuration error: API key is missing or invalid. Please check your environment setup.";
     } else if (error.message?.includes("429") || (error.status === 429)) {
-      return "I'm getting too many requests right now. Please try again in a minute.";
+      errorMessage = "I'm getting too many requests right now. Please try again in a minute.";
     } else if (error.message?.includes("404") || error.message?.includes("not found")) {
-      return "Model not found error. Please check the console for available models and update your code.";
+      errorMessage = "Model not found error. Please check the console for available models and update your code.";
     } else if (error.status && error.status >= 400) {
-      return `API error (${error.status}): ${error.message || "Unknown error"}`;
+      errorMessage = `API error (${error.status}): ${error.message || "Unknown error"}`;
     } else {
-      return "I apologize, but I'm having trouble responding at the moment. Please try again later.";
+      errorMessage = "I apologize, but I'm having trouble responding at the moment. Please try again later.";
     }
+    
+    return {
+      text: errorMessage,
+      voice: defaultVoice
+    };
   }
+};
+
+// Function to speak text using responsive voice
+export const speakText = (text, voice = "US English Male") => {
+  if (typeof window === 'undefined' || !window.responsiveVoice) {
+    console.error("ResponsiveVoice not available");
+    return;
+  }
+  
+  // Clean the text for better speech
+  const cleanText = text
+    .replace(/!\[(.*?)\]\((.*?)\)/g, '') 
+    .replace(/\*\*(.*?)\*\*/g, '$1')    
+    .replace(/\*(.*?)\*/g, '$1')         
+    .replace(/```(.*?)```/gs, '')        
+    .replace(/`(.*?)`/g, '')             
+    .replace(/^[\W]+/g, '')              
+    .replace(/#/g, '');                  
+
+  // Speak using ResponsiveVoice
+  window.responsiveVoice.speak(cleanText, voice);
 };
 
 // Export this function to check available models

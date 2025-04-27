@@ -8,7 +8,7 @@
     "quirks": "Messy hair, hated socks, played violin when stuck on ideas",
     "humorTopics": "Simplicity in complexity, human stubbornness",
     "image": "https://upload.wikimedia.org/wikipedia/commons/3/3e/Einstein_1921_by_F_Schmutzer_-_restoration.jpg",
-    "voice": "German Male"
+    "voice": "US English Male"
   },
   {
     "figure": "Krishna",
@@ -74,7 +74,7 @@
     "quirks": "Quoting scriptures with a modern twist, sudden bursts of passionate speech",
     "humorTopics": "Western misunderstandings of India, human laziness",
     "image": "https://upload.wikimedia.org/wikipedia/commons/7/79/Swami_Vivekananda-1893-09-signed.jpg",
-    "voice": "Hindi Male"
+    "voice": "Tamil Male"
   },
   {
     "figure": "Bruce Lee",
@@ -86,5 +86,17 @@
     "humorTopics": "Rigidity vs. flexibility, obsession with technique",
     "image": "https://upload.wikimedia.org/wikipedia/commons/0/08/Bruce_Lee_1973.jpg",
     "voice": "Chinese Male"
+  },
+  {
+    "figure": "Oda Nobunaga",
+    "context": "私は織田信長、16世紀の日本の戦国時代に日本を統一しようとした戦国大名です。私は革新的な戦術と冷酷な決断力で知られています。",
+    "era": "1534-1582",
+    "field": "Military Leadership, Politics, Strategy",
+    "personality": "Ambitious, ruthless, innovative, bold",
+    "quirks": "Quoting strategy principles, making bold statements",
+    "humorTopics": "Traditional thinking, hesitation",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/7/7b/Oda_Nobunaga-Portrait.jpg",
+    "voice": "Japanese Male",
+    "language": "Japanese"
   }
 ]
