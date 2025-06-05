@@ -4,7 +4,14 @@ import { chatWithHistoricalFigure } from "../services/chatService";
 import historicalFigures from "../datasets/historical_figures.json";
 import Message from './Message';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVolumeMute, faVolumeUp, faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
+import { 
+  faVolumeMute, 
+  faVolumeUp, 
+  faMicrophone, 
+  faMicrophoneSlash,
+  faExpand,
+  faCompress
+} from '@fortawesome/free-solid-svg-icons';
 
 const ChatBox = () => {
   const [chatHistory, setChatHistory] = useState([]);
@@ -13,8 +20,51 @@ const ChatBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [voiceEnabled, setVoiceEnabled] = useState(true);
+  const [isFullScreen, setIsFullScreen] = useState(false);
   
+  const chatBoxRef = useRef(null);
+
   const currentFigure = historicalFigures.find(figure => figure.figure === selectedFigure);
+
+  // Toggle full screen
+  const toggleFullScreen = () => {
+    if (!isFullScreen) {
+      if (chatBoxRef.current.requestFullscreen) {
+        chatBoxRef.current.requestFullscreen();
+      } else if (chatBoxRef.current.webkitRequestFullscreen) { /* Safari */
+        chatBoxRef.current.webkitRequestFullscreen();
+      } else if (chatBoxRef.current.msRequestFullscreen) { /* IE11 */
+        chatBoxRef.current.msRequestFullscreen();
+      }
+      setIsFullScreen(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) { /* Safari */
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { /* IE11 */
+        document.msExitFullscreen();
+      }
+      setIsFullScreen(false);
+    }
+  };
+
+  // Listen for fullscreen change events
+  useEffect(() => {
+    const handleFullScreenChange = () => {
+      setIsFullScreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullScreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullScreenChange);
+    document.addEventListener('msfullscreenchange', handleFullScreenChange);
+
+    return () => {
+      document.removeEventListener('fullscreenchange', handleFullScreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullScreenChange);
+      document.removeEventListener('msfullscreenchange', handleFullScreenChange);
+    };
+  }, []);
 
   // Stop any ongoing speech when changing historical figures
   useEffect(() => {
@@ -140,7 +190,7 @@ const ChatBox = () => {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full" ref={chatBoxRef}>
       {/* Header with profile picture */}
       <div className="bg-[#A67C52] p-4 text-white">
         <div className="flex items-center space-x-4">
@@ -154,8 +204,16 @@ const ChatBox = () => {
             <p className="text-sm opacity-90">{currentFigure.era}</p>
           </div>
           <button 
+            onClick={toggleFullScreen}
+            className="bg-[#8B6544] rounded-full w-10 h-10 flex items-center justify-center"
+            title={isFullScreen ? "Exit full screen" : "Enter full screen"}
+          >
+            <FontAwesomeIcon icon={isFullScreen ? faCompress : faExpand} />
+          </button>
+          <button 
             onClick={toggleVoice}
             className="bg-[#8B6544] rounded-full w-10 h-10 flex items-center justify-center"
+            title={voiceEnabled ? "Mute voice" : "Unmute voice"}
           >
             <FontAwesomeIcon icon={voiceEnabled ? faVolumeUp : faVolumeMute} />
           </button>
